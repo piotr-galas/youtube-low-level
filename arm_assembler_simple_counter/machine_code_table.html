@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Licznik w kodzie maszynowym</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #f6f7f9; --surface: #ffffff; --fg: #1b1f27; --muted: #5d6675; --line: #d5d9e1;
+  --accent: #2563c9; --accent-soft: #e3ecfb;
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #12151b; --surface: #1a1e26; --fg: #e6e9ef; --muted: #9aa3b2; --line: #333a46;
+          --accent: #7aa7f0; --accent-soft: #1f2c44; color-scheme: dark; }
+}
+body {
+  margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body);
+  padding: 40px max(16px, env(safe-area-inset-right, 0px)) 48px max(16px, env(safe-area-inset-left, 0px));
+}
+main { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+h1 { font-family: var(--font-display); font-size: 1.6rem; margin: 0; }
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+th, td { padding: 14px 20px; text-align: left; border-bottom: 1px solid var(--line); }
+th { font-family: var(--font-display); font-weight: 500; color: var(--muted); font-size: 0.95rem; }
+tr:last-child td { border-bottom: none; }
+td { font-family: var(--font-mono); font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+td.addr { color: var(--muted); width: 1%; white-space: nowrap; }
+td.code { color: var(--accent); font-weight: 600; }
+tr.label td { font-size: 0.95rem; color: var(--muted); background: var(--accent-soft); padding-block: 6px; }
+.note { color: var(--muted); margin: 0; }
+h2 { font-family: var(--font-display); font-size: 1.2rem; margin: 16px 0 0; }
+.program {
+  margin: 0; padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  font-family: var(--font-mono); font-size: clamp(1.1rem, 3vw, 1.6rem); font-weight: 600; color: var(--accent);
+  letter-spacing: 0.04em; word-spacing: 0.4em; overflow-wrap: anywhere;
+}
+.program.bin { font-size: clamp(0.85rem, 1.6vw, 1.05rem); line-height: 1.7; letter-spacing: 0.02em; }
+.label-small { margin: 4px 0 -12px; font-size: 0.9rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Licznik w kodzie maszynowym</h1>
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr><th>Adres</th><th>Instrukcja</th><th>Kod maszynowy</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="addr">0</td><td>mov w1, #0</td><td class="code">0x52800001</td></tr>
+        <tr class="label"><td class="addr"></td><td colspan="2">loop: (adres 4)</td></tr>
+        <tr><td class="addr">4</td><td>add w1, w1, #1</td><td class="code">0x11000421</td></tr>
+        <tr><td class="addr">8</td><td>cmp w1, #5</td><td class="code">0x7100143F</td></tr>
+        <tr><td class="addr">12</td><td>b.mi loop</td><td class="code">0x54FFFFC4</td></tr>
+        <tr><td class="addr">16</td><td>mov w0, w1</td><td class="code">0x2A0103E0</td></tr>
+        <tr><td class="addr">20</td><td>ret</td><td class="code">0xD65F03C0</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Każda instrukcja ma 4 bajty, czyli 32 bity, więc adresy rosną co 4.</p>
+  <h2>Cały program</h2>
+  <p class="label-small">Szesnastkowo</p>
+  <p class="program">52800001 11000421 7100143F 54FFFFC4 2A0103E0 D65F03C0</p>
+  <p class="label-small">Binarnie</p>
+  <p class="program bin">01010010100000000000000000000001 00010001000000000000010000100001 01110001000000000001010000111111 01010100111111111111111111000100 00101010000000010000001111100000 11010110010111110000001111000000</p>
+  <p class="note">6 instrukcji, 24 bajty, czyli 192 bity.</p>
+</main>
+</body>
+</html>
