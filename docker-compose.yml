@@ -1,0 +1,9 @@
+services:
+  arm_assembler_simple_counter:
+    image: gcc:latest #GNU Compiler Collection 
+    platform: linux/arm64
+    container_name: arm_assembler_simple_counter
+    volumes:
+      - ./arm_assembler_simple_counter:/build
+    working_dir: /build
+    command: tail -f /dev/null

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Licznik na pięciu architekturach</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #12151b; --surface: #1a1e26; --fg: #e6e9ef; --muted: #9aa3b2; --line: #333a46;
+  --accent: #7aa7f0; --accent-soft: #1f2c44; color-scheme: dark;
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+body {
+  margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body);
+  padding: 40px 16px 48px;
+}
+main { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+h1 { font-family: var(--font-display); font-size: 1.6rem; margin: 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; display: flex; flex-direction: column; gap: 14px;
+}
+.card h2 { font-family: var(--font-display); font-size: 1.35rem; margin: 0; }
+.card h2 small { display: block; font-family: var(--font-body); font-weight: 400; font-size: 0.85rem; color: var(--muted); margin-top: 2px; }
+pre {
+  margin: 0; font-family: var(--font-mono); font-size: 1.05rem; line-height: 1.6;
+  overflow-x: auto; flex: 1;
+}
+pre .lbl { color: var(--muted); }
+pre .jump { color: var(--accent); font-weight: 600; }
+pre .op { color: #f0a050; font-weight: 600; }
+.meta { margin: 0; font-size: 0.9rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Ten sam licznik, pięć architektur</h1>
+  <div class="grid">
+
+    <section class="card">
+      <h2>Mój assembler<small>z Excela</small></h2>
+<pre><span class="lbl">start:</span>
+    <span class="op">set_value</span> 0, licznik
+<span class="lbl">poczatek_petli:</span>
+    <span class="op">add</span> licznik = licznik + 1
+    <span class="op">compare</span> licznik, 5
+<span class="jump">    <span class="op">if</span> oznaczenie == minus
+      -> <span class="op">goto</span> poczatek_petli</span>
+    <span class="op">return</span> licznik</pre>
+      <p class="meta">oznaczenie: plus / minus / zero</p>
+    </section>
+
+    <section class="card">
+      <h2>ARM64<small>Mac M1+, telefony</small></h2>
+<pre><span class="lbl">.global main
+main:</span>
+    <span class="op">mov</span>  w1, #0
+<span class="lbl">loop:</span>
+    <span class="op">add</span>  w1, w1, #1
+    <span class="op">cmp</span>  w1, #5
+<span class="jump">    <span class="op">b.mi</span> loop</span>
+    <span class="op">mov</span>  w0, w1
+    <span class="op">ret</span></pre>
+      <p class="meta">flagi: NZCV · rejestry 64-bitowe</p>
+    </section>
+
+    <section class="card">
+      <h2>x86-64<small>PC, starsze Maki</small></h2>
+<pre><span class="lbl">.intel_syntax noprefix
+.global main
+main:</span>
+    <span class="op">mov</span>  ecx, 0
+<span class="lbl">loop:</span>
+    <span class="op">add</span>  ecx, 1
+    <span class="op">cmp</span>  ecx, 5
+<span class="jump">    <span class="op">js</span>   loop</span>
+    <span class="op">mov</span>  eax, ecx
+    <span class="op">ret</span></pre>
+      <p class="meta">flagi: EFLAGS (SF = minus) · rejestry 64-bitowe</p>
+    </section>
+
+    <section class="card">
+      <h2>ARM32<small>starsze Raspberry Pi</small></h2>
+<pre><span class="lbl">.global main
+main:</span>
+    <span class="op">mov</span>  r1, #0
+<span class="lbl">loop:</span>
+    <span class="op">add</span>  r1, r1, #1
+    <span class="op">cmp</span>  r1, #5
+<span class="jump">    <span class="op">bmi</span>  loop</span>
+    <span class="op">mov</span>  r0, r1
+    <span class="op">bx</span>   lr</pre>
+      <p class="meta">flagi: NZCV · rejestry 32-bitowe</p>
+    </section>
+
+    <section class="card">
+      <h2>RISC-V<small>otwarta architektura</small></h2>
+<pre><span class="lbl">.global main
+main:</span>
+    <span class="op">li</span>   a1, 0
+    <span class="op">li</span>   t0, 5
+<span class="lbl">loop:</span>
+    <span class="op">addi</span> a1, a1, 1
+<span class="jump">    <span class="op">blt</span>  a1, t0, loop</span>
+    <span class="op">mv</span>   a0, a1
+    <span class="op">ret</span></pre>
+      <p class="meta">brak flag, porównanie w skoku · rejestry 64-bitowe</p>
+    </section>
+
+    <section class="card">
+      <h2>AVR<small>Arduino Uno</small></h2>
+<pre><span class="lbl">.global main
+main:</span>
+    <span class="op">ldi</span>  r18, 0
+<span class="lbl">loop:</span>
+    <span class="op">inc</span>  r18
+    <span class="op">cpi</span>  r18, 5
+<span class="jump">    <span class="op">brmi</span> loop</span>
+    <span class="op">mov</span>  r24, r18
+    <span class="op">ldi</span>  r25, 0
+    <span class="op">ret</span></pre>
+      <p class="meta">flagi: SREG (N = minus) · rejestry 8-bitowe</p>
+    </section>
+
+  </div>
+</main>
+</body>
+</html>
